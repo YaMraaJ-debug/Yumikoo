@@ -76,7 +76,7 @@ ydl_opts = {
 
 @Yumikoo.on_message(filters.command("song",COMMAND_HANDLER))
 def download_song(_, message):
-    query = " ".join(message.command[1:])  
+    query = " ".join(message.command[1:])
     print(query)
     m = message.reply("**🔄 sᴇᴀʀᴄʜɪɴɢ... **")
     ydl_ops = {"format": "bestaudio[ext=m4a]"}
@@ -92,7 +92,7 @@ def download_song(_, message):
 
     except Exception as e:
         m.edit("**⚠️ ɴᴏ ʀᴇsᴜʟᴛs ᴡᴇʀᴇ ғᴏᴜɴᴅ. ᴍᴀᴋᴇ sᴜʀᴇ ʏᴏᴜ ᴛʏᴘᴇᴅ ᴛʜᴇ ᴄᴏʀʀᴇᴄᴛ sᴏɴɢ ɴᴀᴍᴇ**")
-        print(str(e))
+        print(e)
         return
     m.edit("**📥 ᴅᴏᴡɴʟᴏᴀᴅɪɴɢ...**")
     try:

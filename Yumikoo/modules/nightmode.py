@@ -38,35 +38,33 @@ async def _nightmode(_, message):
      
 @Yumikoo.on_callback_query(filters.regex("^(add_night|rm_night)$"))
 async def nightcb(Yumikoo, query : CallbackQuery):
-    data = query.data 
+    data = query.data
     chat_id = query.message.chat.id
     user_id = query.from_user.id
     check_night = await nightdb.find_one({"chat_id" : chat_id})
     administrators = []
     async for m in Yumikoo.get_chat_members(chat_id, filter=enums.ChatMembersFilter.ADMINISTRATORS):
-        administrators.append(m.user.id)     
+        administrators.append(m.user.id)
     if user_id in administrators:   
         if data == "add_night":
             if check_night:        
                 await query.message.edit_caption("**๏ ɴɪɢʜᴛᴍᴏᴅᴇ ɪs ᴀʟʀᴇᴀᴅʏ ᴇɴᴀʙʟᴇᴅ ɪɴ ᴛʜɪs ᴄʜᴀᴛ.**")
-            elif not check_night :
+            else:
                 await nightmode_on(chat_id)
-                await query.message.edit_caption("**๏ ᴀᴅᴅᴇᴅ ᴄʜᴀᴛ ᴛᴏ ᴍʏ ᴅᴀᴛᴀʙᴀsᴇ . ᴛʜɪs ɢʀᴏᴜᴘ ᴡɪʟʟ ʙᴇ ᴄʟᴏsᴇᴅ ᴏɴ 𝟷𝟸ᴀᴍ [IST] ᴀɴᴅ ᴡɪʟʟ ᴏᴘᴇɴᴇᴅ ᴏɴ 𝟶𝟼ᴀᴍ [IST] .**") 
-        if data == "rm_night":
+                await query.message.edit_caption("**๏ ᴀᴅᴅᴇᴅ ᴄʜᴀᴛ ᴛᴏ ᴍʏ ᴅᴀᴛᴀʙᴀsᴇ . ᴛʜɪs ɢʀᴏᴜᴘ ᴡɪʟʟ ʙᴇ ᴄʟᴏsᴇᴅ ᴏɴ 𝟷𝟸ᴀᴍ [IST] ᴀɴᴅ ᴡɪʟʟ ᴏᴘᴇɴᴇᴅ ᴏɴ 𝟶𝟼ᴀᴍ [IST] .**")
+        elif data == "rm_night":
             if check_night:  
                 await nightmode_off(chat_id)      
                 await query.message.edit_caption("**๏ ɴɪɢʜᴛᴍᴏᴅᴇ ʀᴇᴍᴏᴠᴇᴅ ғʀᴏᴍ ᴍʏ ᴅᴀᴛᴀʙᴀsᴇ !**")
-            elif not check_night:
+            else:
                 await query.message.edit_caption("**๏  ɴɪɢʜᴛᴍᴏᴅᴇ ɪs ᴀʟʀᴇᴀᴅʏ ᴅɪsᴀʙʟᴇᴅ  ɪɴ ᴛʜɪs ᴄʜᴀᴛ.**") 
             
     
     
-async def start_nightmode() :
-    chats = []
+async def start_nightmode():
     schats = await get_nightchats()
-    for chat in schats:
-        chats.append(int(chat["chat_id"]))
-    if len(chats) == 0:
+    chats = [int(chat["chat_id"]) for chat in schats]
+    if not chats:
         return
     for add_chat in chats:
         try:
@@ -74,7 +72,7 @@ async def start_nightmode() :
                 add_chat,
                 photo="https://telegra.ph//file/06649d4d0bbf4285238ee.jpg",
                 caption= f"**ᴍᴀʏ ᴛʜᴇ ᴀɴɢᴇʟs ғʀᴏᴍ ʜᴇᴀᴠᴇɴ ʙʀɪɴɢ ᴛʜᴇ sᴡᴇᴇᴛᴇsᴛ ᴏғ ᴀʟʟ ᴅʀᴇᴀᴍs ғᴏʀ ʏᴏᴜ. ᴍᴀʏ ʏᴏᴜ ʜᴀᴠᴇ ʟᴏɴɢ ᴀɴᴅ ʙʟɪssғᴜʟ sʟᴇᴇᴘ ғᴜʟʟ ᴏғ ʜᴀᴘᴘʏ ᴅʀᴇᴀᴍs.\n\nɢʀᴏᴜᴘ ɪs ᴄʟᴏsɪɴɢ ɢᴏᴏᴅ ɴɪɢʜᴛ ᴇᴠᴇʀʏᴏɴᴇ  !**")
-            
+
             await Yumikoo.set_chat_permissions(add_chat,CLOSE_CHAT)
 
         except Exception as e:
@@ -85,11 +83,9 @@ scheduler.add_job(start_nightmode, trigger="cron", hour=23, minute=59)
 scheduler.start()
 
 async def close_nightmode():
-    chats = []
     schats = await get_nightchats()
-    for chat in schats:
-        chats.append(int(chat["chat_id"]))
-    if len(chats) == 0:
+    chats = [int(chat["chat_id"]) for chat in schats]
+    if not chats:
         return
     for rm_chat in chats:
         try:
@@ -97,7 +93,7 @@ async def close_nightmode():
                 rm_chat,
                 photo="https://telegra.ph//file/14ec9c3ff42b59867040a.jpg",
                 caption= f"**ɢʀᴏᴜᴘ ɪs ᴏᴘᴇɴɪɴɢ ɢᴏᴏᴅ ᴍᴏʀɴɪɴɢ ᴇᴠᴇʀʏᴏɴᴇ !\n\nᴍᴀʏ ᴛʜɪs ᴅᴀʏ ᴄᴏᴍᴇ ᴡɪᴛʜ ᴀʟʟ ᴛʜᴇ ʟᴏᴠᴇ ʏᴏᴜʀ ʜᴇᴀʀᴛ ᴄᴀɴ ʜᴏʟᴅ ᴀɴᴅ ʙʀɪɴɢ ʏᴏᴜ ᴇᴠᴇʀʏ sᴜᴄᴄᴇss ʏᴏᴜ ᴅᴇsɪʀᴇ. Mᴀʏ ᴇᴀᴄʜ ᴏғ ʏᴏᴜʀ ғᴏᴏᴛsᴛᴇᴘs ʙʀɪɴɢ Jᴏʏ ᴛᴏ ᴛʜᴇ ᴇᴀʀᴛʜ ᴀɴᴅ ʏᴏᴜʀsᴇʟғ. ɪ ᴡɪsʜ ʏᴏᴜ ᴀ ᴍᴀɢɪᴄᴀʟ ᴅᴀʏ ᴀɴᴅ ᴀ ᴡᴏɴᴅᴇʀғᴜʟ ʟɪғᴇ ᴀʜᴇᴀᴅ.**")
-            
+
             await Yumikoo.set_chat_permissions(rm_chat,OPEN_CHAT)
 
         except Exception as e:

@@ -22,16 +22,16 @@ photo = [
 
 
 async def get_user_won(emoji,value):
-    if emoji in ['🎯','🎳']:
-        if value >= 4:
-            u_won = True
-        else:
-            u_won = False
-    elif emoji in ['🏀','⚽'] :
-        if value >= 3:
-            u_won = True
-        else:
-            u_won = False
+    if (
+        emoji in ['🎯', '🎳']
+        and value >= 4
+        or emoji not in ['🎯', '🎳']
+        and emoji in ['🏀', '⚽']
+        and value >= 3
+    ):
+        u_won = True
+    elif emoji in ['🎯', '🎳', '🏀', '⚽']:
+        u_won = False
     return u_won
 
 # --------------------------------------------------------------------------------- #
@@ -70,12 +70,10 @@ async def _weekly(client,message):
   # --------------------------------------------------------------------------------- #
                            
 async def can_play(tame,tru):
-  current_time = datetime.datetime.now()
-  time_since_last_collection = current_time - datetime.datetime.fromtimestamp(tame)
-  x = tru - time_since_last_collection.total_seconds()
-  if str(x).startswith('-'):
-      return 0
-  return x
+    current_time = datetime.datetime.now()
+    time_since_last_collection = current_time - datetime.datetime.fromtimestamp(tame)
+    x = tru - time_since_last_collection.total_seconds()
+    return 0 if str(x).startswith('-') else x
   
 
 BET_DICT = {}
@@ -90,54 +88,48 @@ TRIVIA_DICT = {}
 
 @Yumikoo.on_message(filters.command(["bet","toss"]))
 async def _bet(client,message):
-  chat_id = message.chat.id
-  user = message.from_user
-  if not await is_player(user.id):
-     await create_account(user.id,message.from_user.username)
-  if user.id not in BET_DICT.keys():
-      BET_DICT[user.id] = None     
-  if BET_DICT[user.id]:
-      x= await can_play(BET_DICT[user.id],12)
-      print(x)
-      if int(x) != 0:
-        return await message.reply(f'ʏᴏᴜ ᴄᴀɴ ʙᴇᴛ ᴀɢᴀɪɴ ɪɴ ʟɪᴋᴇ {get_readable_time(x)}.')     
-  possible = ['h','heads','tails','t','head','tail']
-  if len(message.command) < 3:
-      return await message.reply_photo(photo=random.choice(photo), caption="✑ ᴜsᴀɢᴇ : /bet [ᴀᴍᴏᴜɴᴛ] [ʜᴇᴀᴅs/ᴛᴀɪʟs]")
-  to_bet = message.command[1]
-  cmd = message.command[2].lower()
-  coins = await user_wallet(user.id)
-  if to_bet == '*':
-      to_bet = coins
-  elif not to_bet.isdigit():
-       return await message.reply_photo(photo=random.choice(photo), caption="ʏᴏᴜ ᴛʜɪɴᴋs ᴛʜᴀᴛ ɪᴛ's ᴀ ᴠᴀʟɪᴅ ᴀᴍᴏᴜɴᴛ?")
-  to_bet = int(to_bet)
-  if to_bet == 0:
-      return await message.reply_photo(photo=random.choice(photo), caption="ʏᴏᴜ ᴡᴀɴɴᴀ ʙᴇᴛ 𝟶 ? ʟᴏʟ!") 
-  elif to_bet > coins:
-      return await message.reply_photo(photo=random.choice(photo), caption="ʏᴏᴜ ᴅᴏɴ'ᴛ ʜᴀᴠᴇ ᴛʜᴀᴛ ᴍᴜᴄʜ ᴅᴀʟᴄs ʜᴇʀᴇ ɪs ʏᴏᴜʀ ʙᴀʟᴀɴᴄᴇ ✑ `{0:,}` ᴅᴀʟᴄs".format(coins)) 
-  rnd = random.choice(['heads','tails'])
-  if cmd not in possible:
-      return await message.reply_photo(photo=random.choice(photo), caption="ʏᴏᴜ sʜᴏᴜʟᴅ ᴛʀʏ ʜᴇᴀᴅs ᴏʀ ᴇɪᴛʜᴇʀ ᴛᴀɪʟs.")
-  if cmd in ['h','head','heads']:
-      if rnd == 'heads':
-          user_won = True         
-      else:
-          user_won = False
-  if cmd in ['t','tail','tails']:
-      if rnd == 'tails':
-          user_won = True
-      else:
-          user_won = False
-  BET_DICT[user.id] = datetime.datetime.now().timestamp()
-  if not user_won:
-      new_wallet = coins - to_bet
-      await gamesdb.update_one({'user_id' : user.id}, {'$set' : {'coins' : new_wallet}})
-      return await message.reply_photo(photo=random.choice(photo), caption="🛑 ᴛʜᴇ ᴄᴏɪɴ ʟᴀɴᴅᴇᴅ ᴏɴ {0}!\n• ʏᴏᴜ ʟᴏsᴛ `{1:,}` ᴄᴏɪɴs\n• ᴛᴏᴛᴀʟ ʙᴀʟᴀɴᴄᴇ : `{2:,}` ᴅᴀʟᴄs".format(rnd,to_bet,new_wallet))
-  else:
-      new_wallet = coins + to_bet
-      await gamesdb.update_one({'user_id' : user.id}, {'$set' : {'coins' : new_wallet}})
-      return await message.reply_photo(photo=random.choice(photo), caption="✅ ᴛʜᴇ ᴄᴏɪɴ ʟᴀɴᴅᴇᴅ ᴏɴ {0}!\nʏᴏᴜ ᴡᴏɴ `{1:,}` ᴄᴏɪɴs\nᴛᴏᴛᴀʟ ʙᴀʟᴀɴᴄᴇ : `{2:,}` ᴅᴀʟᴄs".format(rnd,to_bet,new_wallet)) 
+    chat_id = message.chat.id
+    user = message.from_user
+    if not await is_player(user.id):
+       await create_account(user.id,message.from_user.username)
+    if user.id not in BET_DICT.keys():
+        BET_DICT[user.id] = None
+    if BET_DICT[user.id]:
+        x= await can_play(BET_DICT[user.id],12)
+        print(x)
+        if int(x) != 0:
+          return await message.reply(f'ʏᴏᴜ ᴄᴀɴ ʙᴇᴛ ᴀɢᴀɪɴ ɪɴ ʟɪᴋᴇ {get_readable_time(x)}.')
+    possible = ['h','heads','tails','t','head','tail']
+    if len(message.command) < 3:
+        return await message.reply_photo(photo=random.choice(photo), caption="✑ ᴜsᴀɢᴇ : /bet [ᴀᴍᴏᴜɴᴛ] [ʜᴇᴀᴅs/ᴛᴀɪʟs]")
+    to_bet = message.command[1]
+    cmd = message.command[2].lower()
+    coins = await user_wallet(user.id)
+    if to_bet == '*':
+        to_bet = coins
+    elif not to_bet.isdigit():
+         return await message.reply_photo(photo=random.choice(photo), caption="ʏᴏᴜ ᴛʜɪɴᴋs ᴛʜᴀᴛ ɪᴛ's ᴀ ᴠᴀʟɪᴅ ᴀᴍᴏᴜɴᴛ?")
+    to_bet = int(to_bet)
+    if to_bet == 0:
+        return await message.reply_photo(photo=random.choice(photo), caption="ʏᴏᴜ ᴡᴀɴɴᴀ ʙᴇᴛ 𝟶 ? ʟᴏʟ!") 
+    elif to_bet > coins:
+        return await message.reply_photo(photo=random.choice(photo), caption="ʏᴏᴜ ᴅᴏɴ'ᴛ ʜᴀᴠᴇ ᴛʜᴀᴛ ᴍᴜᴄʜ ᴅᴀʟᴄs ʜᴇʀᴇ ɪs ʏᴏᴜʀ ʙᴀʟᴀɴᴄᴇ ✑ `{0:,}` ᴅᴀʟᴄs".format(coins))
+    rnd = random.choice(['heads','tails'])
+    if cmd not in possible:
+        return await message.reply_photo(photo=random.choice(photo), caption="ʏᴏᴜ sʜᴏᴜʟᴅ ᴛʀʏ ʜᴇᴀᴅs ᴏʀ ᴇɪᴛʜᴇʀ ᴛᴀɪʟs.")
+    if cmd in ['h','head','heads']:
+        user_won = rnd == 'heads'
+    if cmd in ['t','tail','tails']:
+        user_won = rnd == 'tails'
+    BET_DICT[user.id] = datetime.datetime.now().timestamp()
+    if not user_won:
+        new_wallet = coins - to_bet
+        await gamesdb.update_one({'user_id' : user.id}, {'$set' : {'coins' : new_wallet}})
+        return await message.reply_photo(photo=random.choice(photo), caption="🛑 ᴛʜᴇ ᴄᴏɪɴ ʟᴀɴᴅᴇᴅ ᴏɴ {0}!\n• ʏᴏᴜ ʟᴏsᴛ `{1:,}` ᴄᴏɪɴs\n• ᴛᴏᴛᴀʟ ʙᴀʟᴀɴᴄᴇ : `{2:,}` ᴅᴀʟᴄs".format(rnd,to_bet,new_wallet))
+    else:
+        new_wallet = coins + to_bet
+        await gamesdb.update_one({'user_id' : user.id}, {'$set' : {'coins' : new_wallet}})
+        return await message.reply_photo(photo=random.choice(photo), caption="✅ ᴛʜᴇ ᴄᴏɪɴ ʟᴀɴᴅᴇᴅ ᴏɴ {0}!\nʏᴏᴜ ᴡᴏɴ `{1:,}` ᴄᴏɪɴs\nᴛᴏᴛᴀʟ ʙᴀʟᴀɴᴄᴇ : `{2:,}` ᴅᴀʟᴄs".format(rnd,to_bet,new_wallet)) 
      
 # --------------------------------------------------------------------------------- #
 
@@ -314,9 +306,7 @@ async def _top(client,message):
     for i in await x.to_list(length=None):
         if counter == 11:
             break
-        if i["coins"] == 0:
-            pass
-        else:
+        if i["coins"] != 0:
             user_name = i["username"]
             link = f"[{user_name}](https://t.me/{user_name})"
             if not user_name:
@@ -326,11 +316,11 @@ async def _top(client,message):
                 except Exception as e:
                     print(e)
                     link = user_name
-            
+
             coins = i["coins"]
             if counter == 1:
                msg += f"{counter:02d}.**👑 {link}** ⪧ {coins:,}\n"
-                
+
             else:
                 msg += f"{counter:02d}.**👤 {link}** ⪧ {coins:,}\n"
             counter += 1

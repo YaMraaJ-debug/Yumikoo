@@ -12,17 +12,12 @@ warnsdb = mongo.warns
 
 async def int_to_alpha(user_id : int) -> str:
     alphabet = list(ascii_lowercase)[:10]
-    text = ""
     user_id = str(user_id)
-    for i in user_id:
-        text += alphabet[int(i)]
-    return text        
+    return "".join(alphabet[int(i)] for i in user_id)        
 
 async def get_warns(chat_id : int) -> Dict[str,int]:
     warns = await warnsdb.find_one({"chat_id": chat_id})
-    if not warns:
-        return {}
-    return warns["warns"]
+    return {} if not warns else warns["warns"]
 
 
 async def get_warn(chat_id: int, name: str) -> Union[bool, dict]:

@@ -15,10 +15,7 @@ async def get_served_users():
 
 async def is_served_user(user):
     users = await get_served_users()
-    if user in users:
-        return True
-    else:
-        return False
+    return user in users
 
 async def add_served_user(user):
     users = await get_served_users()
@@ -29,7 +26,7 @@ async def add_served_user(user):
 
 async def remove_served_user(user):
     users = await get_served_users()
-    if not user in users:
+    if user not in users:
         return
     else:
         await db.users.delete_one({"user": user})

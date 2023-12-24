@@ -55,10 +55,7 @@ def get_url(message_1: Message) -> Union[str, None]:
                     offset, length = entity.offset, entity.length
                     break
 
-    if offset is None:
-        return None
-
-    return text[offset:offset + length]
+    return None if offset is None else text[offset:offset + length]
 
 def get_file_name(audio: Union[Audio, Voice]):
     ext = audio.file_name.split(".")[-1] if not isinstance(audio, Voice) else "ogg"
@@ -159,9 +156,7 @@ def get(chat_id: int) -> Dict[str, str]:
             return None
 
 def is_empty(chat_id: int) -> bool:
-    if chat_id in queues:
-        return queues[chat_id].empty()
-    return True
+    return queues[chat_id].empty() if chat_id in queues else True
 
 def task_done(chat_id: int):
     if chat_id in queues:

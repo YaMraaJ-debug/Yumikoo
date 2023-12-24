@@ -52,7 +52,7 @@ def get_readable_time(seconds: int) -> str:
     for x in range(len(time_list)):
         time_list[x] = str(time_list[x]) + time_suffix_list[x]
     if len(time_list) == 4:
-        ping_time += time_list.pop() + ", "
+        ping_time += f"{time_list.pop()}, "
 
     time_list.reverse()
     ping_time += ":".join(time_list)
@@ -70,16 +70,18 @@ async def ping(Client, m: Message):
     sender = m.from_user
     up = get_readable_time((time.time() - tim))
     end_time = time.time()
-    ping1 = str(round((end_time - start_time) * 1000, 3)) + " ms"
+    ping1 = f"{str(round((end_time - start_time) * 1000, 3))} ms"
     if m.from_user.id in sudo:
         e = await m.reply_photo(photo=random.choice(photo),caption="ɢᴇᴛᴛɪɴɢ ᴘɪɴɢɪɴɢ sᴛᴀᴛᴜs...")
         await rest(2)
         await e.edit_text("ᴘɪɴɢɪɴɢ ✨")
         await rest(1)
         await e.edit_text(PING_TEXT.format(ping1, up, __version__), reply_markup=Button) 
-       
+
     if m.from_user.id not in sudo:
-        await m.reply(("ʏᴏᴜʀ ᴀʀᴇ ɴᴏᴛ ᴍʏ ᴍᴀsᴛᴇʀ ʜᴜʜ!!😏😏\nʙsᴅᴋ ɢᴀɴᴅ ᴘᴇ ɪᴛɴᴇ ᴛʜʜᴘᴀᴅ ᴍᴀʀᴜɴɢɪ ᴏᴡɴᴇʀ ɢɪʀɪ ᴄʜʜᴜᴛ ᴊᴀᴀʏᴇɢɪ ʜᴜʜ 🤭 [ʟᴏᴅᴀ](tg://user?id={}) ᴘᴇʀsᴏɴ.").format(sender.id))
+        await m.reply(
+            f"ʏᴏᴜʀ ᴀʀᴇ ɴᴏᴛ ᴍʏ ᴍᴀsᴛᴇʀ ʜᴜʜ!!😏😏\nʙsᴅᴋ ɢᴀɴᴅ ᴘᴇ ɪᴛɴᴇ ᴛʜʜᴘᴀᴅ ᴍᴀʀᴜɴɢɪ ᴏᴡɴᴇʀ ɢɪʀɪ ᴄʜʜᴜᴛ ᴊᴀᴀʏᴇɢɪ ʜᴜʜ 🤭 [ʟᴏᴅᴀ](tg://user?id={sender.id}) ᴘᴇʀsᴏɴ."
+        )
 
 # ------------------------------------------------------------------------------- #
 
@@ -113,9 +115,12 @@ async def alive(_,msg:Message):
     sender = msg.from_user
     up = get_readable_time((time.time() - tim))
     end_time = time.time()
-    ping1 = str(round((end_time - start_time) * 1000, 3)) + " ms"    
-    x = await msg.reply_photo(photo=random.choice(photo), caption="**ᴀʟɪᴠɪɴɢ....**")    
-    await x.edit_caption("**๏ ˹ʜɪꝛᴏᴋᴏ ꝛᴏʙᴏᴛ˼ ɪs ᴀʟɪᴠᴇ ᴀɴᴅ ᴡᴏʀᴋɪɴɢ ɢᴏᴏᴅ ᴡɪᴛʜ ᴀ ᴘɪɴɢ ᴏғ :**  `{} ᴍs`\n**๏ ʙᴏᴛs sᴇʀᴠɪᴄᴇ ᴜᴘᴛɪᴍᴇ ɪs :** `{}`".format(ping1, up), reply_markup=Button)
+    ping1 = f"{str(round((end_time - start_time) * 1000, 3))} ms"
+    x = await msg.reply_photo(photo=random.choice(photo), caption="**ᴀʟɪᴠɪɴɢ....**")
+    await x.edit_caption(
+        f"**๏ ˹ʜɪꝛᴏᴋᴏ ꝛᴏʙᴏᴛ˼ ɪs ᴀʟɪᴠᴇ ᴀɴᴅ ᴡᴏʀᴋɪɴɢ ɢᴏᴏᴅ ᴡɪᴛʜ ᴀ ᴘɪɴɢ ᴏғ :**  `{ping1} ᴍs`\n**๏ ʙᴏᴛs sᴇʀᴠɪᴄᴇ ᴜᴘᴛɪᴍᴇ ɪs :** `{up}`",
+        reply_markup=Button,
+    )
 
 
 

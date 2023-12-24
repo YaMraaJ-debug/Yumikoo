@@ -16,9 +16,4 @@ async def nightmode_off(chat_id : int):
 
 async def get_nightchats() -> list:
     chats = nightdb.find({"chat_id": {"$lt": 0}})
-    if not chats:
-        return []
-    chats_list = []
-    for chat in await chats.to_list(length=1000000000):
-        chats_list.append(chat)
-    return chats_list
+    return [] if not chats else list(await chats.to_list(length=1000000000))

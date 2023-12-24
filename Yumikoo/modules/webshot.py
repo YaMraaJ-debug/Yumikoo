@@ -27,7 +27,7 @@ async def post(url: str, *args, **kwargs):
 
 
 async def take_screenshot(url: str, full: bool = False):
-    url = "https://" + url if not url.startswith("http") else url
+    url = f"https://{url}" if not url.startswith("http") else url
     payload = {
         "url": url,
         "width": 1100,
@@ -87,10 +87,7 @@ async def take_ss(_, message: Message):
 
         m = await m.edit("**ᴜᴘʟᴏᴀᴅɪɴɢ...**")
 
-        if not full:
-            await message.reply_photo(photo, reply_markup=button)
-        else:
-            await message.reply_photo(photo, reply_markup=button)
+        await message.reply_photo(photo, reply_markup=button)
         await m.delete()
     except Exception as e:
         await m.edit(str(e))

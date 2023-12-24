@@ -19,7 +19,7 @@ button = InlineKeyboardMarkup([[
 
 get_font = lambda font_size, font_path: ImageFont.truetype(font_path, font_size)
 resize_text = (
-    lambda text_size, text: (text[:text_size] + "...").upper()
+    lambda text_size, text: f"{text[:text_size]}...".upper()
     if len(text) > text_size
     else text.upper()
 )
@@ -109,7 +109,7 @@ async def userstatus(user_id):
 async def userinfo(_, message):
     chat_id = message.chat.id
     user_id = message.from_user.id
-    
+
     if not message.reply_to_message and len(message.command) == 2:
         try:
             user_id = message.text.split(None, 1)[1]
@@ -133,7 +133,7 @@ async def userinfo(_, message):
                 id, name, username, mention, status, dc_id, bio), reply_to_message_id=message.id, reply_markup=button)
         except Exception as e:
             await message.reply_text(str(e))        
-      
+
     elif not message.reply_to_message:
         try:
             user_info = await Yumikoo.get_chat(user_id)
@@ -157,8 +157,8 @@ async def userinfo(_, message):
         except Exception as e:
             await message.reply_text(str(e))
 
-            
-    elif message.reply_to_message:
+
+    else:
         user_id = message.reply_to_message.from_user.id
         try:
             user_info = await Yumikoo.get_chat(user_id)
@@ -275,8 +275,7 @@ async def github(_, message):
 **ғᴏʟʟᴏᴡᴇʀs :** `{followers}`
 **ғᴏʟʟᴏᴡɪɴɢ :** `{following}`"""
             except Exception as e:
-                print(str(e))
-                pass
+                print(e)
     await message.reply_photo(photo=avatar_url, caption=caption, reply_markup=button)
 
 

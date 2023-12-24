@@ -84,7 +84,7 @@ async def executor(client: Yumikoo, message: Message):
         )
         await message.reply_document(
             document=filename,
-            caption=f"<b>⥤ ᴇᴠᴀʟ :</b>\n<code>{cmd[0:980]}</code>\n\n<b>⥤ ʀᴇsᴜʟᴛ :</b>\nᴀᴛᴛᴀᴄʜᴇᴅ ᴅᴏᴄᴜᴍᴇɴᴛ",
+            caption=f"<b>⥤ ᴇᴠᴀʟ :</b>\n<code>{cmd[:980]}</code>\n\n<b>⥤ ʀᴇsᴜʟᴛ :</b>\nᴀᴛᴛᴀᴄʜᴇᴅ ᴅᴏᴄᴜᴍᴇɴᴛ",
             quote=False,
             reply_markup=keyboard,
         )
@@ -154,8 +154,7 @@ async def shell(client, message):
     stdout, stderr = process.communicate()
     reply = ""
     stderr = stderr.decode()
-    stdout = stdout.decode()
-    if stdout:
+    if stdout := stdout.decode():
         reply += f"**sᴛᴅᴏᴜᴛ**\n`{stdout}`\n"
     if stderr:
         reply += f"**sᴛᴅᴇʀʀ**\n`{stderr}`\n"
