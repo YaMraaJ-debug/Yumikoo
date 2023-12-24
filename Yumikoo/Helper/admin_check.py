@@ -20,10 +20,7 @@ async def admin_check(message: Message) -> bool:
     user_id = message.from_user.id
 
     check_status = await client.get_chat_member(chat_id=chat_id, user_id=user_id)
-    if check_status.status not in [
+    return check_status.status in [
         ChatMemberStatus.OWNER,
-        ChatMemberStatus.ADMINISTRATOR
-    ]:
-        return False
-    else:
-        return True
+        ChatMemberStatus.ADMINISTRATOR,
+    ]

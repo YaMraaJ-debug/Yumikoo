@@ -15,10 +15,7 @@ async def get_served_chats():
 
 async def is_served_chat(chat):
     chats = await get_served_chats()
-    if chat in chats:
-        return True
-    else:
-        return False
+    return chat in chats
 
 async def add_served_chat(chat):
     chats = await get_served_chats()
@@ -29,7 +26,7 @@ async def add_served_chat(chat):
 
 async def remove_served_chat(chat):
     chats = await get_served_chats()
-    if not chat in chats:
+    if chat not in chats:
         return
     else:
         await db.chats.delete_one({"chat": chat})

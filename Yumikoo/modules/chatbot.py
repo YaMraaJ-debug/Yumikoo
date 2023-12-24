@@ -58,11 +58,11 @@ async def restriction_Yumikoo(Yumikoo :Yumikoo, message):
     chat_id = message.chat.id
     if len(message.text) < 2:
         return await message.reply(random.choice(Yumikoo_text))
-    bruh = message.text.split(maxsplit=1)[1]
-    data = bruh.split(" ")
-    
     if reply:
         user_id = reply.from_user.id
+        bruh = message.text.split(maxsplit=1)[1]
+        data = bruh.split(" ")
+
         for banned in data:
             print(f"present {banned}")
             if banned in ban:
@@ -71,41 +71,41 @@ async def restriction_Yumikoo(Yumikoo :Yumikoo, message):
                 else:
                     await Yumikoo.ban_chat_member(chat_id, user_id)
                     await message.reply("OK, banned!")
-                    
+
         for unbanned in data:
             print(f"present {unbanned}")
             if unbanned in unban:
                 await Yumikoo.unban_chat_member(chat_id, user_id)
-                await message.reply(f"OK, unbanned!") 
-                
+                await message.reply("OK, unbanned!") 
+
         for kicked in data:
             print(f"present {kicked}")
             if kicked in kick:
                 if user_id in SUDO_USERS:
                     await message.reply(random.choice(strict_txt))
-                
+
                 else:
                     await Yumikoo.ban_chat_member(chat_id, user_id)
                     await Yumikoo.unban_chat_member(chat_id, user_id)
                     await message.reply("get lost! bhga diya bhosdi wale ko") 
-                    
+
         for muted in data:
-            print(f"present {muted}") 
+            print(f"present {muted}")
             if muted in mute:
                 if user_id in SUDO_USERS:
                     await message.reply(random.choice(strict_txt))
-                
+
                 else:
                     permissions = ChatPermissions(can_send_messages=False)
                     await message.chat.restrict_member(user_id, permissions)
-                    await message.reply(f"muted successfully! Disgusting people.") 
-                    
+                    await message.reply("muted successfully! Disgusting people.") 
+
         for unmuted in data:
-            print(f"present {unmuted}")            
+            print(f"present {unmuted}")
             if unmuted in unmute:
                 permissions = ChatPermissions(can_send_messages=True)
                 await message.chat.restrict_member(user_id, permissions)
-                await message.reply(f"Huh, OK, sir!")   
+                await message.reply("Huh, OK, sir!")   
 
 
         for promoted in data:

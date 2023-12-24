@@ -84,15 +84,15 @@ def time_to_seconds(time):
 def truncate(text):
     list = text.split(" ")
     text1 = ""
-    text2 = ""    
+    text2 = ""
     for i in list:
-        if len(text1) + len(i) < 27:        
-            text1 += " " + i
-        elif len(text2) + len(i) < 25:        
-            text2 += " " + i
+        if len(text1) + len(i) < 27:
+            text1 += f" {i}"
+        elif len(text2) + len(i) < 25:
+            text2 += f" {i}"
 
     text1 = text1.strip()
-    text2 = text2.strip()     
+    text2 = text2.strip()
     return [text1,text2]
 
 
@@ -102,8 +102,7 @@ def changeImageSize(maxWidth, maxHeight, image):
     heightRatio = maxHeight / image.size[1]
     newWidth = int(widthRatio * image.size[0])
     newHeight = int(heightRatio * image.size[1])
-    newImage = image.resize((newWidth, newHeight))
-    return newImage
+    return image.resize((newWidth, newHeight))
 
 
 async def generate_cover(requested_by, title, views, duration, thumbnail):
@@ -114,7 +113,7 @@ async def generate_cover(requested_by, title, views, duration, thumbnail):
                 await f.write(await resp.read())
                 await f.close()
 
-    image = Image.open(f"./background.png")
+    image = Image.open("./background.png")
     black = Image.open("Yumikoo/Helper/resources/black.jpg")
     img = Image.open("Yumikoo/Helper/resources/music.png")
     image5 = changeImageSize(1280, 720, img)
@@ -148,41 +147,40 @@ async def generate_cover(requested_by, title, views, duration, thumbnail):
     final_img_arr = np.dstack((img_arr,lum_img_arr))
     image3 = Image.fromarray(final_img_arr)
     image3 = image3.resize((600,600))
-    
+
     image2.paste(image3, (50,70), mask = image3)
     image2.paste(image5, (0,0), mask = image5)
 
-    
+
     font1 = ImageFont.truetype(r'Yumikoo/Helper/resources/robot.otf', 30)
     font2 = ImageFont.truetype(r'Yumikoo/Helper/resources/robot.otf', 60)
     font3 = ImageFont.truetype(r'Yumikoo/Helper/resources/robot.otf', 49)
     font4 = ImageFont.truetype(r'Yumikoo/Helper/resources/Yumikoo.ttf', 35)
 
     image4 = ImageDraw.Draw(image2)
-    image4.text((10, 10), "Yumikoo MUSIC", fill="white", font = font1, align ="left") 
+    image4.text((10, 10), "Yumikoo MUSIC", fill="white", font = font1, align ="left")
     image4.text((670, 150), "NOW PLAYING", fill="white", font = font2, stroke_width=2, stroke_fill="white", align ="left") 
 
-    
+
     title1 = truncate(title)
-    image4.text((670, 280), text=title1[0], fill="white", font = font3, align ="left") 
+    image4.text((670, 280), text=title1[0], fill="white", font = font3, align ="left")
     image4.text((670, 332), text=title1[1], fill="white", font = font3, align ="left") 
 
-    
+
     views = f"Views : {views}"
     duration = f"Duration : {duration} minutes"
-    channel = f"Channel : T-Series"
+    channel = "Channel : T-Series"
 
 
-    
-    image4.text((670, 410), text=views, fill="white", font = font4, align ="left") 
-    image4.text((670, 460), text=duration, fill="white", font = font4, align ="left") 
+
+    image4.text((670, 410), text=views, fill="white", font = font4, align ="left")
+    image4.text((670, 460), text=duration, fill="white", font = font4, align ="left")
     image4.text((670, 510), text=channel, fill="white", font = font4, align ="left")
 
-    
-    image2.save(f"final.png")
-    os.remove(f"background.png")
-    final = f"temp.png"
-    return final
+
+    image2.save("final.png")
+    os.remove("background.png")
+    return "temp.png"
 
 # --------------------------------------------------------------------------------------------------------- #
 
@@ -191,10 +189,10 @@ async def generate_cover(requested_by, title, views, duration, thumbnail):
 async def play(_, message: Message):
     global que
     global useer
-    
+
     lel = await message.reply("**🔎 sᴇᴀʀᴄʜɪɴɢ...**")
-   
-    bsdk = message.from_user.mention    
+
+    bsdk = message.from_user.mention
     audio = (
         (message.reply_to_message.audio or message.reply_to_message.voice)
         if message.reply_to_message
@@ -218,7 +216,7 @@ async def play(_, message: Message):
         requested_by = message.from_user.first_name
         await generate_cover(requested_by, title, views, duration, thumbnail)
         file_path = file_name
-            
+
     elif url:
         try:
             results = YoutubeSearch(url, max_results=1).to_dict()            
@@ -243,7 +241,7 @@ async def play(_, message: Message):
             thumb_name = "https://telegra.ph/file/00411492c1fb4c0a91f18.jpg"
             duration = "NaN"
             views = "NaN"
-            
+
 
         if (dur / 60) > DURATION_LIMIT:
             await lel.edit(
@@ -257,12 +255,12 @@ async def play(_, message: Message):
         if len(message.command) < 2:
             await lel.edit(
                      "💌 **ᴜsᴀɢᴇ: /ᴘʟᴀʏ ɢɪᴠᴇ ᴀ ᴛɪᴛʟᴇ sᴏɴɢ ᴛᴏ ᴘʟᴀʏ ᴍᴜsɪᴄ.**"
-                    
+
             )
         else:
             await lel.edit("**⇆ ᴘʀᴏᴄᴇssɪɴɢ...**")
         query = message.text.split(None, 1)[1]
-        
+
         try:
             results = YoutubeSearch(query, max_results=1).to_dict()
             url = f"https://youtube.com{results[0]['url_suffix']}"            
@@ -286,10 +284,10 @@ async def play(_, message: Message):
             await lel.edit(
                 "**sᴏɴɢ ɴᴏᴛ ғᴏᴜɴᴅ, ᴛʀʏ sᴇᴀʀᴄʜɪɴɢ ᴡɪᴛʜ sᴏɴɢ ɴᴀᴍᴇ.**"
             )
-            print(str(e))
+            print(e)
             return
 
-        
+
         if (dur / 60) > DURATION_LIMIT:
             await lel.edit(
                 f"**sᴏɴɢs ʟᴏɴɢᴇʀ ᴛʜᴀɴ {DURATION_LIMIT} ᴍɪɴᴜᴛᴇs ᴀʀᴇ ɴᴏᴛ ᴀʟʟᴏᴡᴇᴅ ᴛᴏ ᴘʟᴀʏ.**"
@@ -298,10 +296,8 @@ async def play(_, message: Message):
         requested_by = message.from_user.first_name
         await generate_cover(requested_by, title, views, duration, thumbnail)
         file_path = await get_audio_stream(url)
-    ACTV_CALLS = []
     chat_id = message.chat.id
-    for x in pytgcalls.active_calls:
-        ACTV_CALLS.append(int(x.chat_id))
+    ACTV_CALLS = [int(x.chat_id) for x in pytgcalls.active_calls]
     if int(chat_id) in ACTV_CALLS:
         position = await rq.put(chat_id, file=file_path)
         await message.reply_photo(
@@ -309,7 +305,7 @@ async def play(_, message: Message):
             caption=f"**➻ ᴛʀᴀᴄᴋ ᴀᴅᴅᴇᴅ ᴛᴏ ǫᴜᴇᴜᴇ » {position} **\n\n**​🏷️ ɴᴀᴍᴇ :**[{title[:15]}]({url})\n⏰** ᴅᴜʀᴀᴛɪᴏɴ :** `{duration}` **ᴍɪɴᴜᴛᴇs**\n👀 ** ʀᴇǫᴜᴇsᴛᴇᴅ ʙʏᴇ : **{bsdk}",
             reply_markup=keyboard,
         )
-       
+
     else:
         await pytgcalls.join_group_call(
             chat_id,
@@ -333,10 +329,8 @@ async def play(_, message: Message):
 
 @Yumikoo.on_message(filters.command(["skip", "next"], prefixes=["/", "!", "%", ",", "", ".", "@", "#"]) & admin_filter)
 async def skip(_, message: Message):    
-    ACTV_CALLS = []
     chat_id = message.chat.id
-    for x in pytgcalls.active_calls:
-        ACTV_CALLS.append(int(x.chat_id))
+    ACTV_CALLS = [int(x.chat_id) for x in pytgcalls.active_calls]
     if chat_id not in ACTV_CALLS:
         await message.reply_text("**ᴍᴜsɪᴄ ᴘʟᴀʏᴇʀ ɴᴏᴛʜɪɴɢ ɪs ᴘʟᴀʏɪɴɢ ᴛᴏ sᴋɪᴘ.**")
     else:
@@ -490,10 +484,8 @@ async def change_volume(client, message):
 
 @Yumikoo.on_callback_query(filters.regex("music_skip"))
 async def callback_skip(_, query : CallbackQuery):    
-    ACTV_CALLS = []
     chat_id = query.message.chat.id
-    for x in pytgcalls.active_calls:
-        ACTV_CALLS.append(int(x.chat_id))
+    ACTV_CALLS = [int(x.chat_id) for x in pytgcalls.active_calls]
     if chat_id not in ACTV_CALLS:
         await query.answer("ᴍᴜsɪᴄ ᴘʟᴀʏᴇʀ ɴᴏᴛʜɪɴɢ ɪs ᴘʟᴀʏɪɴɢ ᴛᴏ sᴋɪᴘ.")
     else:

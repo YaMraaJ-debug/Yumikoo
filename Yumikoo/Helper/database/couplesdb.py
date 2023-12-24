@@ -9,26 +9,17 @@ coupledb = mongo.couples
    
 async def _get_lovers(cid: int):
     lovers = await coupledb.find_one({"chat_id": cid})
-    if lovers:
-        lovers = lovers["couple"]
-    else:
-        lovers = {}
+    lovers = lovers["couple"] if lovers else {}
     return lovers
 
 async def _get_image(cid: int):
     lovers = await coupledb.find_one({"chat_id": cid})
-    if lovers:
-        lovers = lovers["img"]
-    else:
-        lovers = {}
+    lovers = lovers["img"] if lovers else {}
     return lovers
 
 async def get_couple(cid: int, date: str):
     lovers = await _get_lovers(cid)
-    if date in lovers:
-        return lovers[date]
-    else:
-        return False
+    return lovers[date] if date in lovers else False
 
 
 async def save_couple(cid: int, date: str, couple: dict, img: str):

@@ -11,8 +11,7 @@ raw_directory = os.path.join("Yumikoo", "Helper", "downloader", "raw_files")
 
 @Yumikoo.on_message(filters.command(["rmd", "clear"], prefixes=["/", "!"]))
 async def clear_downloads(_, message: Message):
-    ls_dir = os.listdir(downloads_directory)
-    if ls_dir:
+    if ls_dir := os.listdir(downloads_directory):
         for file in os.listdir(downloads_directory):
             os.remove(os.path.join(downloads_directory, file))
         await message.reply_text("✅ **ᴅᴇʟᴇᴛᴇᴅ ᴀʟʟ ᴅᴏᴡɴʟᴏᴀᴅ ғɪʟᴇs.**")
@@ -22,8 +21,7 @@ async def clear_downloads(_, message: Message):
 
 @Yumikoo.on_message(filters.command(["rmw", "clean"], prefixes=["/", "!"]))
 async def clear_raw(_, message: Message):
-    ls_dir = os.listdir(raw_directory)
-    if ls_dir:
+    if ls_dir := os.listdir(raw_directory):
         for file in os.listdir(raw_directory):
             os.remove(os.path.join(raw_directory, file))
         await message.reply_text("✅ **ᴅᴇʟᴇᴛᴇᴅ ᴀʟʟ ʀᴀᴡ ғɪʟᴇs.**")

@@ -59,13 +59,13 @@ async def add_waifus(_, message):
         return await message.reply_text("**sᴡᴇᴇᴛʜᴇᴀʀᴛ ɪ ᴛʜɪɴᴋ ʏᴏᴜ ғᴏʀɢᴇᴛ ᴀɴɪᴍᴇ ɴᴀᴍᴇ.**")
     if not data[3]:
         return await message.reply("**sᴡᴇᴇᴛʜᴇᴀʀᴛ ɪ ᴛʜɪɴᴋ ʏᴏᴜ ғᴏʀɢᴇᴛ ᴡᴀɪғᴜ ʀᴀʀɪᴛʏ.**")
-    
+
     photo = data[0]
     nam = data[1]
     ani = data[2]
     rare = data[3]
     levels = ["common", "rare", "epic",  "legendary","royal"]
-    if data[3].lower() not in levels:
+    if rare.lower() not in levels:
         return await message.reply("**ᴅᴇᴛᴇᴄᴛᴇᴅ ɪɴᴠᴀʟɪᴅ ʀᴀʀɪᴛʏ.**")
     rarity = rare.title()
     anime = ani.title()
@@ -206,10 +206,9 @@ async def gift_waifu(client, message):
 
     if replied:
         x = message.command[1]
-        z = " "
         y = message.command[2]
-        
-        waifu_name = x + z + y  
+
+        waifu_name = f"{x} {y}"
         sender_id = str(user_id)
         cusr.execute("SELECT user_id, rarity FROM grabbed WHERE user_id=%s AND name=%s", (sender_id, waifu_name))
         sender_waifu = cusr.fetchone()

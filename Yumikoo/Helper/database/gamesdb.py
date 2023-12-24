@@ -37,10 +37,8 @@ async def is_player(user_id):
 # --------------------------------------------------------------------------------- #
 
 async def user_wallet(user_id):
-    player = await gamesdb.find_one({"user_id" : user_id})
-    if not player:
-        return 0
-    return player['coins']
+  player = await gamesdb.find_one({"user_id" : user_id})
+  return 0 if not player else player['coins']
 
 # --------------------------------------------------------------------------------- #
  

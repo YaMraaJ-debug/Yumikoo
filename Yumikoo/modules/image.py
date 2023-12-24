@@ -21,8 +21,6 @@ async def ImageGeneration(model,prompt):
         output = await client.generate(model,prompt,"")
         if output['code'] != 1:
             return 2
-        elif output['code'] == 69:
-            return output['code']
         task_id, request_id = output['task_id'],output['request_id']
         await asyncio.sleep(20)
         tries = 0
@@ -50,12 +48,11 @@ def getText(message):
     text_to_return = message.text
     if message.text is None:
         return None
-    if " " in text_to_return:
-        try:
-            return message.text.split(None, 1)[1]
-        except IndexError:
-            return None
-    else:
+    if " " not in text_to_return:
+        return None
+    try:
+        return message.text.split(None, 1)[1]
+    except IndexError:
         return None
 
         
@@ -108,16 +105,13 @@ def paginate_models(page_n: int, models: list,user_id) -> list:
         ] + [
             (
                 EqInlineKeyboardButton(
-                    "◁",
-                    callback_data=f"d.left.{modulo_page}.{user_id}"
+                    "◁", callback_data=f"d.left.{modulo_page}.{user_id}"
                 ),
                 EqInlineKeyboardButton(
-                    "⌯ ᴄᴀɴᴄᴇʟ ⌯",
-                    callback_data=f"close_data"
+                    "⌯ ᴄᴀɴᴄᴇʟ ⌯", callback_data="close_data"
                 ),
                 EqInlineKeyboardButton(
-                    "▷",
-                    callback_data=f"d.right.{modulo_page}.{user_id}"
+                    "▷", callback_data=f"d.right.{modulo_page}.{user_id}"
                 ),
             )
         ]
@@ -179,10 +173,8 @@ async def selectModel(_:Yumikoo,query:t.CallbackQuery):
         return await query.edit_message_text("sᴏᴍᴇᴛʜɪɴɢ ᴡᴇɴᴛ ᴡʀᴏɴɢ @DevsOops !!")
     elif img_url == 69:
         return await query.edit_message_text("ɴsғᴡ ɴᴏᴛ ᴀʟʟᴏᴡᴇᴅ !")
-    images = []
     modelName = [i['name'] for i in Models if i['id'] == modelId]
-    for i in img_url:
-        images.append(t.InputMediaPhoto(i))
+    images = [t.InputMediaPhoto(i) for i in img_url]
     images[-1] = t.InputMediaPhoto(img_url[-1],caption=f"Your Prompt:\n`{promptData['prompt']}`")
     await query.message.delete()
     try:
@@ -193,7 +185,7 @@ async def selectModel(_:Yumikoo,query:t.CallbackQuery):
         chat_id=query.message.chat.id,
         media=images,
         reply_to_message_id=promptData['reply_to_id']
-        
+
     )
 
 

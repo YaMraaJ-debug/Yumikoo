@@ -87,36 +87,33 @@ async def admins(client, message):
           ownerList.append(admin.user)
         else:  
           adminList.append(admin.user)
-      else:
-        pass   
-    lenAdminList= len(ownerList) + len(adminList)  
+    lenAdminList= len(ownerList) + len(adminList)
     text2 = f"**ɢʀᴏᴜᴘ sᴛᴀғғ - {message.chat.title}**\n\n"
     try:
       owner = ownerList[0]
-      if owner.username == None:
+      if owner.username is None:
         text2 += f"👑 ᴏᴡɴᴇʀ\n└ {owner.mention}\n\n👮🏻 ᴀᴅᴍɪɴs\n"
       else:
         text2 += f"👑 ᴏᴡɴᴇʀ\n└ @{owner.username}\n\n👮🏻 ᴀᴅᴍɪɴs\n"
     except:
       text2 += f"👑 ᴏᴡɴᴇʀ\n└ <i>Hidden</i>\n\n👮🏻 ᴀᴅᴍɪɴs\n"
     if len(adminList) == 0:
-      text2 += "└ <i>ᴀᴅᴍɪɴs ᴀʀᴇ ʜɪᴅᴅᴇɴ</i>"  
-      await Yumikoo.send_message(message.chat.id, text2)   
+      text2 += "└ <i>ᴀᴅᴍɪɴs ᴀʀᴇ ʜɪᴅᴅᴇɴ</i>"
     else:  
       while len(adminList) > 1:
         admin = adminList.pop(0)
-        if admin.username == None:
+        if admin.username is None:
           text2 += f"├ {admin.mention}\n"
         else:
-          text2 += f"├ @{admin.username}\n"    
+          text2 += f"├ @{admin.username}\n"
       else:    
         admin = adminList.pop(0)
         if admin.username == None:
           text2 += f"└ {admin.mention}\n\n"
         else:
           text2 += f"└ @{admin.username}\n\n"
-      text2 += f"✅ | **ᴛᴏᴛᴀʟ ɴᴜᴍʙᴇʀ ᴏғ ᴀᴅᴍɪɴs**: {lenAdminList}"  
-      await Yumikoo.send_message(message.chat.id, text2)           
+      text2 += f"✅ | **ᴛᴏᴛᴀʟ ɴᴜᴍʙᴇʀ ᴏғ ᴀᴅᴍɪɴs**: {lenAdminList}"
+    await Yumikoo.send_message(message.chat.id, text2)
   except FloodWait as e:
     await asyncio.sleep(e.value)       
 

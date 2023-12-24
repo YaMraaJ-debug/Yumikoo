@@ -101,10 +101,8 @@ async def _packkang(Yumikoo :Yumikoo,message):
 
 @Yumikoo.on_message(filters.command(["stickerid","stid"]))
 async def sticker_id(Yumikoo: Yumikoo, msg):
-    if not msg.reply_to_message:
-        await msg.reply_text("Reply to a sticker")        
-    elif not msg.reply_to_message.sticker:
-        await msg.reply_text("Reply to a sticker")        
+    if not msg.reply_to_message or not msg.reply_to_message.sticker:
+        await msg.reply_text("Reply to a sticker")
     st_in = msg.reply_to_message.sticker
     await msg.reply_text(f"""
 ⊹ <u>**sᴛɪᴄᴋᴇʀ ɪɴғᴏ**</u> ⊹
